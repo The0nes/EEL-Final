@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 pygame.init()  
-pygame.display.set_caption("platformer")  # sets the window title
+pygame.display.set_caption("EEL")  # sets the window title
 screen = pygame.display.set_mode((1000, 1000))  # creates game screen
 screen.fill((0,0,0))
 clock = pygame.time.Clock() #set up clock
@@ -12,12 +12,21 @@ red = (255,0,0)
 
 Eel = pygame.image.load('eelface.png') #load your spritesheet
 Eel.set_colorkey((255,255,255))
+# EelB = pygame.image.load('eelbody.png') #load your spritesheet
+# EelB.set_colorkey((255,255,255))
 Eel2 = pygame.image.load('eelface2.png') #load your spritesheet
 Eel2.set_colorkey((255,255,255))
+# EelB2 = pygame.image.load('eelbody2.png') #load your spritesheet
+# EelB2.set_colorkey((255,255,255))
 
 fishy = pygame.image.load('fishy.png')
 fishy.set_colorkey((255,255,255))
 Back = pygame.image.load('background.png')
+
+
+eat = pygame.mixer.Sound('nom.wav')
+musica = pygame.mixer.music.load('musica.wav')
+pygame.mixer.music.play(-1)
 
 #CONSTANTS
 LEFT=0
@@ -43,6 +52,8 @@ RowNum = 2
 frameNum = 0
 RowNum2 = 0
 frameNum2 = 0
+RowNum3 = 0
+frameNum3 = 0
 
 def CircleCollision(x1,x2,y1,y2, radius):
     if (math.sqrt((x2 - x1)**2 + (y2- y1)**2))<radius:
@@ -62,6 +73,16 @@ xpos=0
 ypos=0
 mousePos = (xpos, ypos)
 
+print('how fast are you trying to go? slow, normal, fast, and extreme')
+choice = input()
+if choice == 'slow':
+    n = 3
+elif choice == 'normal':
+    n = 5
+elif choice == 'fast':
+    n = 10
+elif choice == 'extreme':
+    n = 50
 
 while not gameover: #GAME LOOP############################################################
     clock.tick(60) #FPS
@@ -116,7 +137,7 @@ while not gameover: #GAME LOOP##################################################
     
     #LEFT MOVEMENT
     if keys[LEFT]==True:
-        vx=-3
+        vx=-n
         vy=0
         RowNum = 2
         frameNum = 0
@@ -124,7 +145,7 @@ while not gameover: #GAME LOOP##################################################
         
     #Right Movement
     elif keys[RIGHT]==True:
-        vx=3
+        vx=n
         vy=0
         RowNum = 0
         frameNum = 0
@@ -132,7 +153,7 @@ while not gameover: #GAME LOOP##################################################
     
       #JUMPING  
     if keys[UP]==True:
-        vy=-3
+        vy=-n
         vx=0
         RowNum = 1
         frameNum = 0
@@ -140,7 +161,7 @@ while not gameover: #GAME LOOP##################################################
         
       #DOWN
     if keys[DOWN]==True:
-        vy=+3
+        vy=+n
         vx=0
         RowNum = 3
         frameNum = 0
@@ -148,7 +169,7 @@ while not gameover: #GAME LOOP##################################################
     
     #LEFT MOVEMENT
     if second[LEFT]==True:
-        vx2=-3
+        vx2=-n
         vy2=0
         RowNum2 = 2
         frameNum2 = 0
@@ -156,7 +177,7 @@ while not gameover: #GAME LOOP##################################################
         
     #Right Movement
     elif second[RIGHT]==True:
-        vx2=3
+        vx2=n
         vy2=0
         RowNum2 = 0
         frameNum2 = 0
@@ -164,7 +185,7 @@ while not gameover: #GAME LOOP##################################################
     
       #JUMPING  
     if second[UP]==True:
-        vy2=-3
+        vy2=-n
         vx2=0
         RowNum2 = 1
         frameNum2 = 0
@@ -172,7 +193,7 @@ while not gameover: #GAME LOOP##################################################
         
       #DOWN
     if second[DOWN]==True:
-        vy2=+3
+        vy2=+n
         vx2=0
         RowNum2 = 3
         frameNum2 = 0
@@ -192,6 +213,7 @@ while not gameover: #GAME LOOP##################################################
         c2 = random.randrange(1, 255)
         c3 = random.randrange(1, 255)
         s = random.randrange(10, 21)
+        pygame.mixer.Sound.play(eat)
         frameNum += 1
         score += 1
         
@@ -202,6 +224,7 @@ while not gameover: #GAME LOOP##################################################
         c2 = random.randrange(1, 255)
         c3 = random.randrange(1, 255)
         s = random.randrange(10, 21)
+        pygame.mixer.Sound.play(eat)
         frameNum2 += 1
         score2 += 1
 #player 1 warp zone
@@ -221,7 +244,21 @@ while not gameover: #GAME LOOP##################################################
     if Py2 < 0:
         Py2=999
     if Py2 > 999:
-        Py2=0   
+        Py2=0
+#player collision
+    if Px > Px2 and Px < Px2 + 50 and Py > Py2 and Py < Py2 + 50:
+        score = 0
+        score2 = 0
+        Px2 = 200
+        Py2 = 200
+        Px = 800
+        Py = 800
+        vx = 0
+        vy = 0
+        vx2 = 0
+        vy2 = 0
+        
+
     #Render Section ---------------------------
     screen.fill((0,0,255))
     screen.blit(Back, (0,0), (0,0,1000,1000))
